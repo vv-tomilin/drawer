@@ -66,8 +66,6 @@ class Canvas {
     }
 
     if (this.currentShape instanceof Pencil) {
-      console.log('Point in Canvas >', { x, y });
-
       this.currentShape.addPoint({ x, y });
     }
 

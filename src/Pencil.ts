@@ -29,20 +29,16 @@ class Pencil implements Shape {
   }
 
   draw(context: CanvasRenderingContext2D): void {
-    try {
-      context.strokeStyle = this.color;
-      context.lineWidth = this.lineWidth;
-      context.beginPath();
-      context.moveTo(this.points[0].x, this.points[0].y);
+    context.strokeStyle = this.color;
+    context.lineWidth = this.lineWidth;
+    context.beginPath();
+    context.moveTo(this.points[0].x, this.points[0].y);
 
-      for (let i = 1; i < this.points.length; i++) {
-        context.lineTo(this.points[i].x, this.points[i].y);
-      }
-
-      context.stroke();
-    } catch (err) {
-      console.error(err);
+    for (let i = 1; i < this.points.length; i++) {
+      context.lineTo(this.points[i].x, this.points[i].y);
     }
+
+    context.stroke();
   }
 
   addPoint(point: Point): void {
