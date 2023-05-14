@@ -1,6 +1,4 @@
-import RectangleDrawer from './RectangleDrawer';
 import Canvas from './Canvas';
 
-//const rectangleDrawer = new RectangleDrawer('canvas');
-
-const canvas = new Canvas('canvas');
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const canvasApp = new Canvas(canvas);

@@ -1,65 +1,29 @@
-type RectangleOptions = {
+import { Shape } from './types';
+
+class Rectangle implements Shape {
   x: number;
   y: number;
-  width: number;
-  height: number;
-};
 
-class Rectangle {
-  private startX!: number;
-  private startY!: number;
+  isDrawing: boolean;
 
-  private currentX!: number;
-  private currentY!: number;
+  private width: number;
+  private height: number;
 
-  rectangles!: RectangleOptions[];
-
-  private canvas!: HTMLCanvasElement;
-  private context!: CanvasRenderingContext2D;
-
-  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-    this.context = context;
-    this.canvas = canvas;
-    this.rectangles = [];
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+    this.width = 0;
+    this.height = 0;
+    this.isDrawing = false;
   }
 
-  setStartPosition(event: MouseEvent) {
-    this.startX = event.offsetX;
-    this.startY = event.offsetY;
+  draw(context: CanvasRenderingContext2D) {
+    context.fillRect(this.x, this.y, this.width, this.height);
   }
 
-  currentDrawRectangle(event: MouseEvent, isDrawing: boolean) {
-    if (!isDrawing) {
-      return;
-    }
-
-    this.currentX = event.offsetX;
-    this.currentY = event.offsetY;
-
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    this.rectangles.forEach((rectangle) => {
-      //* Во время отрисовки текущего прямоугольника рисуем остальные уже отрисованные
-      this.context.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-    });
-
-    const width = this.currentX - this.startX;
-    const height = this.currentY - this.startY;
-
-    this.context.fillRect(this.startX, this.startY, width, height);
-  }
-
-  //* Записываем отрисованный прямоугольгик в массив
-  setRectangleToArray() {
-    const width = this.currentX - this.startX;
-    const height = this.currentY - this.startY;
-
-    this.rectangles.push({
-      x: this.startX,
-      y: this.startY,
-      width,
-      height,
-    });
+  setDimensions(x: number, y: number) {
+    this.width = x - this.x;
+    this.height = y - this.y;
   }
 }
 export default Rectangle;

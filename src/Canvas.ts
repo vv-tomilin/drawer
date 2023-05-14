@@ -1,6 +1,6 @@
-//WARNING: высокая связанность с классом Rectangle
-
 import Rectangle from './Rectangle';
+import Circle from './Circle';
+import { Shape } from './types';
 
 enum MouseEventType {
   DOWN = 'mousedown',
@@ -8,17 +8,22 @@ enum MouseEventType {
   UP = 'mouseup',
 }
 
+enum ShapeType {
+  RECTANGLE = 'rectangle',
+  CIRCLE = 'circle',
+}
+
 class Canvas {
   private canvas!: HTMLCanvasElement;
   private context!: CanvasRenderingContext2D;
-  private isDrawing: boolean = false;
-  private rectangle!: Rectangle;
+  private shapes!: Shape[];
+  private currentShape!: Shape | null;
 
-  constructor(canvasId: string) {
-    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    this.rectangle = new Rectangle(this.canvas, this.context);
+    this.shapes = [];
+    this.currentShape = null;
 
     this.canvas.addEventListener(MouseEventType.DOWN, this.handleMouseDown.bind(this));
     this.canvas.addEventListener(MouseEventType.MOVE, this.handleMouseMove.bind(this));
@@ -26,17 +31,64 @@ class Canvas {
   }
 
   private handleMouseDown(event: MouseEvent) {
-    this.isDrawing = true;
-    this.rectangle.setStartPosition(event);
+    const shapeType = (
+      document.querySelector('input[name="shapeType"]:checked') as HTMLInputElement
+    ).value;
+
+    const x = event.offsetX;
+    const y = event.offsetY;
+
+    switch (shapeType) {
+      case ShapeType.RECTANGLE:
+        this.currentShape = new Rectangle(x, y);
+        break;
+      case ShapeType.CIRCLE:
+        this.currentShape = new Circle(x, y);
+        break;
+      default:
+        throw Error();
+    }
+
+    this.shapes.push(this.currentShape);
+    this.currentShape.isDrawing = true;
   }
 
   private handleMouseMove(event: MouseEvent) {
-    this.rectangle.currentDrawRectangle(event, this.isDrawing);
+    const x = event.offsetX;
+    const y = event.offsetY;
+
+    if (!this.currentShape || !this.currentShape.isDrawing) {
+      return;
+    }
+
+    if (this.currentShape instanceof Rectangle) {
+      this.currentShape.setDimensions(x, y);
+    }
+
+    if (this.currentShape instanceof Circle) {
+      this.currentShape.setRadius(x, y);
+    }
+
+    this.draw();
   }
 
   private handleMouseUp() {
-    this.isDrawing = false;
-    this.rectangle.setRectangleToArray();
+    if (this.currentShape) {
+      this.currentShape.isDrawing = false;
+    }
+
+    console.log(this.shapes); //! *************************************
+
+    this.currentShape = null;
+  }
+
+  private draw() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.shapes.forEach((shape) => {
+      console.log(shape); //! *****************************
+
+      shape.draw(this.context);
+    });
   }
 }
 export default Canvas;
