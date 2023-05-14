@@ -1,17 +1,9 @@
 import Rectangle from './Rectangle';
 import Circle from './Circle';
+import Pencil from './Pencil';
+
 import { Shape } from './types';
-
-enum MouseEventType {
-  DOWN = 'mousedown',
-  MOVE = 'mousemove',
-  UP = 'mouseup',
-}
-
-enum ShapeType {
-  RECTANGLE = 'rectangle',
-  CIRCLE = 'circle',
-}
+import { MouseEventType, ShapeType } from './enums';
 
 class Canvas {
   private canvas!: HTMLCanvasElement;
@@ -28,6 +20,7 @@ class Canvas {
     this.canvas.addEventListener(MouseEventType.DOWN, this.handleMouseDown.bind(this));
     this.canvas.addEventListener(MouseEventType.MOVE, this.handleMouseMove.bind(this));
     this.canvas.addEventListener(MouseEventType.UP, this.handleMouseUp.bind(this));
+    this.canvas.addEventListener(MouseEventType.LEAVE, this.handleMouseLeave.bind(this));
   }
 
   private handleMouseDown(event: MouseEvent) {
@@ -44,6 +37,9 @@ class Canvas {
         break;
       case ShapeType.CIRCLE:
         this.currentShape = new Circle(x, y);
+        break;
+      case ShapeType.PENCIL:
+        this.currentShape = new Pencil(x, y, 'red', 1);
         break;
       default:
         throw Error();
@@ -69,6 +65,12 @@ class Canvas {
       this.currentShape.setRadius(x, y);
     }
 
+    if (this.currentShape instanceof Pencil) {
+      console.log('Point in Canvas >', { x, y });
+
+      this.currentShape.addPoint({ x, y });
+    }
+
     this.draw();
   }
 
@@ -78,6 +80,13 @@ class Canvas {
     }
 
     this.currentShape = null;
+  }
+
+  private handleMouseLeave() {
+    if (this.currentShape instanceof Pencil) {
+      this.currentShape.isDrawing = false;
+      this.currentShape = null;
+    }
   }
 
   private draw() {
