@@ -77,16 +77,12 @@ class Canvas {
       this.currentShape.isDrawing = false;
     }
 
-    console.log(this.shapes); //! *************************************
-
     this.currentShape = null;
   }
 
   private draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.shapes.forEach((shape) => {
-      console.log(shape); //! *****************************
-
       shape.draw(this.context);
     });
   }
