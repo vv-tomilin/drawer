@@ -25,8 +25,6 @@ class Circle implements Shape {
     const dx = x - this.x;
     const dy = y - this.y;
     this.radius = Math.sqrt(dx * dx + dy * dy);
-
-    console.log('RADIUS', this.radius);
   }
 }
 export default Circle;
