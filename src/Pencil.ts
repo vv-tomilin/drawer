@@ -10,17 +10,19 @@ class Pencil implements Shape {
   y: number;
 
   isDrawing: boolean;
+  isEditing: boolean;
+
+  points: Point[];
 
   private color: string;
   private lineWidth: number;
-
-  private points: Point[];
 
   constructor(x: number, y: number, color: string, lineWidth: number) {
     this.x = x;
     this.y = y;
 
     this.isDrawing = false;
+    this.isEditing = false;
 
     this.color = color;
     this.lineWidth = lineWidth;
@@ -43,6 +45,10 @@ class Pencil implements Shape {
 
   addPoint(point: Point): void {
     this.points.push(point);
+  }
+
+  isClicked(x: number, y: number): boolean {
+    return false;
   }
 }
 

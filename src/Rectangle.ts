@@ -5,9 +5,10 @@ class Rectangle implements Shape {
   y: number;
 
   isDrawing: boolean;
+  isEditing: boolean;
 
-  private width: number;
-  private height: number;
+  width: number;
+  height: number;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -15,6 +16,7 @@ class Rectangle implements Shape {
     this.width = 0;
     this.height = 0;
     this.isDrawing = false;
+    this.isEditing = false;
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -24,6 +26,12 @@ class Rectangle implements Shape {
   setDimensions(x: number, y: number) {
     this.width = x - this.x;
     this.height = y - this.y;
+  }
+
+  isClicked(curMouseX: number, curMouseY: number): boolean {
+    return (
+      curMouseX > this.x && curMouseX < this.x + this.width && curMouseY < this.y + this.height
+    );
   }
 }
 export default Rectangle;

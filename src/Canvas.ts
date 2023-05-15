@@ -31,6 +31,8 @@ class Canvas {
     const x = event.offsetX;
     const y = event.offsetY;
 
+    this.findClickedShape(event.offsetX, event.offsetY);
+
     switch (shapeType) {
       case ShapeType.RECTANGLE:
         this.currentShape = new Rectangle(x, y);
@@ -73,6 +75,10 @@ class Canvas {
   }
 
   private handleMouseUp() {
+    const lastShape = this.shapes[this.shapes.length - 1];
+
+    this.clearEmptyShapes(lastShape);
+
     if (this.currentShape) {
       this.currentShape.isDrawing = false;
     }
@@ -92,6 +98,54 @@ class Canvas {
     this.shapes.forEach((shape) => {
       shape.draw(this.context);
     });
+  }
+
+  private findClickedShape(x: number, y: number) {
+    for (const shape of this.shapes) {
+      if (shape.isClicked(x, y)) {
+        shape.isEditing = true;
+      } else {
+        shape.isEditing = false;
+      }
+    }
+  }
+
+  private clearEmptyShapes(curShape: Shape): void {
+    if (curShape instanceof Rectangle) {
+      this.shapes = this.shapes.filter((shape) => {
+        if (shape instanceof Rectangle) {
+          if (shape.width > 0 && shape.height > 0) {
+            return shape;
+          }
+        } else {
+          return shape;
+        }
+      });
+    }
+
+    if (curShape instanceof Circle) {
+      this.shapes = this.shapes.filter((shape) => {
+        if (shape instanceof Circle) {
+          if (shape.radius > 0) {
+            return shape;
+          }
+        } else {
+          return shape;
+        }
+      });
+    }
+
+    if (curShape instanceof Pencil) {
+      this.shapes = this.shapes.filter((shape) => {
+        if (shape instanceof Pencil) {
+          if (shape.points.length > 1) {
+            return shape;
+          }
+        } else {
+          return shape;
+        }
+      });
+    }
   }
 }
 export default Canvas;
