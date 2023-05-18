@@ -16,7 +16,7 @@ class Circle implements Shape {
     this.radius = 0;
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, isEdit: boolean) {
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     context.fill();

@@ -21,6 +21,13 @@ class Canvas {
     this.canvas.addEventListener(MouseEventType.MOVE, this.handleMouseMove.bind(this));
     this.canvas.addEventListener(MouseEventType.UP, this.handleMouseUp.bind(this));
     this.canvas.addEventListener(MouseEventType.LEAVE, this.handleMouseLeave.bind(this));
+
+    window.addEventListener('resize', this.resizeCanvas, false);
+  }
+
+  resizeCanvas() {
+    this.canvas.width = window.innerWidth - 20;
+    this.canvas.height = window.innerHeight - (window.innerHeight * 14.2) / 100;
   }
 
   private handleMouseDown(event: MouseEvent) {
@@ -74,7 +81,7 @@ class Canvas {
     this.draw();
   }
 
-  private handleMouseUp() {
+  private handleMouseUp(event: MouseEvent) {
     const lastShape = this.shapes[this.shapes.length - 1];
 
     this.clearEmptyShapes(lastShape);
@@ -84,6 +91,11 @@ class Canvas {
     }
 
     this.currentShape = null;
+
+    this.draw();
+
+    console.log(this.shapes); //! *************************************
+    console.log(this.currentShape);//! *************************************
   }
 
   private handleMouseLeave() {
@@ -96,12 +108,14 @@ class Canvas {
   private draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.shapes.forEach((shape) => {
-      shape.draw(this.context);
+      shape.draw(this.context, shape.isEditing, this.currentShape);
     });
   }
 
   private findClickedShape(x: number, y: number) {
     for (const shape of this.shapes) {
+      shape.isEditing = false;
+
       if (shape.isClicked(x, y)) {
         shape.isEditing = true;
       } else {
